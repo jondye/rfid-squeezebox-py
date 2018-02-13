@@ -76,6 +76,13 @@ def main():
             if card_id == config['master_card']:
                 print("master card detected")
                 program_tracks(reader, sounder, config)
+            if card_id == config['pause_card']:
+                print("pausing")
+                squeezebox.pause(
+                        config['host'],
+                        config['port'],
+                        config['player_id'])
+                speaker.success_sound(sounder)
             else:
                 print("card %s read" % card_id)
                 speaker.ack_sound(sounder)

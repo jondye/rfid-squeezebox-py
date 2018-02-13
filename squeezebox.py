@@ -20,6 +20,10 @@ def play(host, port, player_id, tracks):
     _cmd(host, port, cmd)
 
 
+def pause(host, port, player_id):
+    _cmd(host, port, '{id} pause\n'.format(id=player_id))
+
+
 def read_current_playlist(host, port, player_id):
     cmd = '{id} status 0 100 tags:\n'.format(id=player_id)
     resp = _cmd(host, port, cmd)
