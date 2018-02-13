@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Rope project settings
+.ropeproject
+
+# Vim files
+.*.sw[po]
+
+# Config files
+config.json
