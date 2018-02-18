@@ -27,7 +27,6 @@ def pause(host, port, player_id):
 def read_current_playlist(host, port, player_id):
     cmd = '{id} status 0 100 tags:\n'.format(id=player_id)
     resp = _cmd(host, port, cmd)
-    print("READ: %s" % resp)
     playlist = []
     for item in resp.split():
         item = item.split('%3A')
