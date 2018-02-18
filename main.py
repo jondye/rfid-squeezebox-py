@@ -28,7 +28,7 @@ def load_config():
     with open('config.json', 'r') as f:
         return ujson.load(f)
 
-def connect(client, ssid, password):
+def connect(client, ssid, password, sounder):
     if not client.active():
         print("Activating WIFI Station mode")
         client.active(True)
@@ -38,11 +38,16 @@ def connect(client, ssid, password):
         while not client.isconnected():
             pass
     print("network config:", client.ifconfig())
+    speaker.ack_sound(sounder)
+    time.sleep(0.2)
+    speaker.ack_sound(sounder)
+    time.sleep(0.2)
+    speaker.ack_sound(sounder)
     return client
 
 
+
 def program_tracks(reader, sounder, config):
-    speaker.ack_sound(sounder)
     print("Programming tracks")
 
     tracks = squeezebox.read_current_playlist(
@@ -66,11 +71,11 @@ def main():
     sounder = PWM(Pin(4))
     network.WLAN(network.AP_IF).active(False) # disable access point
     client = network.WLAN(network.STA_IF)
-    connect(client, config['ssid'], config['password'])
+    connect(client, config['ssid'], config['password'], sounder)
     while True:
         try:
             if not client.isconnected():
-                connect(client, config['ssid'], config['password'])
+                connect(client, config['ssid'], config['password'], sounder)
 
             card_id = read(reader)
 
@@ -86,7 +91,6 @@ def main():
                 speaker.success_sound(sounder)
             else:
                 print("card %s read" % card_id)
-                speaker.ack_sound(sounder)
                 data = db.load(card_id)
                 if data and 'tracks' in data:
                     print("playing %s" % data['tracks'])
@@ -96,6 +100,8 @@ def main():
                         config['player_id'],
                         data['tracks'])
                     speaker.success_sound(sounder)
+                else:
+                    speaker.fail_sound(sounder)
         except Exception as e:
             speaker.fail_sound(sounder)
             print("EXCEPTION: %s" % e)
